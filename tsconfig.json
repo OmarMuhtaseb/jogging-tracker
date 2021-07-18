@@ -11,6 +11,14 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@toptal/libs-auth": [
+        "libs/auth"
+      ],
+      "@toptal/libs-db": [
+        "libs/db"
+      ]
+    }
   }
 }
