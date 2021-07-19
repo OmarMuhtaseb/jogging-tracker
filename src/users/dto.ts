@@ -4,6 +4,7 @@ export class Dto {
     id: string;
     email: string;
     name: string;
+    role: string;
     createdAt: Date;
 }
 

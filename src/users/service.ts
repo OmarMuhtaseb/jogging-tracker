@@ -13,14 +13,14 @@ export class UsersService {
                 private jwtService: JwtService) {
     }
 
-    public async create(data: {email: string; name: string; password: string, roles?: Role[]}): Promise<User> {
+    public async create(data: {email: string; name: string; password: string, role?: Role}): Promise<User> {
         const userExists = await this.emailExists(data.email);
         if (userExists) {
             throw new ConflictException(UsersConstants.ExceptionMessages.USER_EXISTS);
         }
         const hashedPassword = UsersService.hashPassword(data.password);
         return await this.repository.create({
-            roles: data.roles || [Role.user],
+            role: data.role || Role.user,
             email: data.email,
             name: data.name,
             password: hashedPassword,
@@ -29,6 +29,10 @@ export class UsersService {
 
     public async get(id: string): Promise<User> {
         return await this.repository.findById(id);
+    }
+
+    public async exists(id: string): Promise<boolean> {
+        return await this.repository.existsById(id);
     }
 
     public async update(id: string, data: {name: string, password: string}): Promise<User> {
@@ -79,7 +83,7 @@ export class UsersService {
         const userAttr: AuthUser = {
             id: user._id,
             email: user.email,
-            roles: user.roles,
+            role: user.role,
         };
 
         return this.jwtService.sign(userAttr);

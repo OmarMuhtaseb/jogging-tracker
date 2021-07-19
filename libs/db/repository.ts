@@ -87,8 +87,14 @@ export class Repository<T extends BaseModel> {
 
     }
 
+    public async existsById(id: string): Promise<boolean> {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return await this.model.exists({_id: id});
+    }
+
     public async exists(filters: FilterQuery<T>): Promise<boolean> {
-        return this.model.exists(filters);
+        return await this.model.exists(filters);
     }
 }
 

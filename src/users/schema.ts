@@ -14,7 +14,7 @@ export class User extends BaseModel {
     password: string;
 
     @Prop({required: true})
-    roles: Role[];
+    role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

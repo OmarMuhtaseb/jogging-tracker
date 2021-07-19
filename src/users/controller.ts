@@ -1,6 +1,6 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {AuthenticatedUser, AuthUser, Roles} from '@toptal/libs-auth';
+import {AuthenticatedUser, AuthUser, Roles, RolesGuard} from '@toptal/libs-auth';
 import {PaginationQuery} from '../schema';
 import {UserAuthResponse, UserListResponse, UserResponse} from './dto';
 import {UsersMapper} from './mapper';
@@ -13,8 +13,9 @@ import {UsersService} from './service';
 export class UsersController {
     constructor(private service: UsersService) {
     }
-
+    // TODO: Add role update API
     @Post()
+    @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Create User'})
@@ -25,6 +26,7 @@ export class UsersController {
 
     @Roles()
     @Get('me')
+    @UseGuards(RolesGuard)
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Get Current User'})
     public async getCurrent(@AuthenticatedUser() authUser: AuthUser): Promise<UserResponse> {
@@ -33,6 +35,7 @@ export class UsersController {
     }
 
     @Get(':id')
+    @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Get User'})
@@ -43,6 +46,7 @@ export class UsersController {
 
     @Roles()
     @Put('me')
+    @UseGuards(RolesGuard)
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Update Current User'})
     public async updateCurrent(@AuthenticatedUser() authUser: AuthUser, @Body() request: UserUpdateRequest): Promise<UserResponse> {
@@ -51,6 +55,7 @@ export class UsersController {
     }
 
     @Put(':id')
+    @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Update User'})
@@ -60,6 +65,7 @@ export class UsersController {
     }
 
     @Delete(':id')
+    @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Delete User'})
@@ -69,6 +75,7 @@ export class UsersController {
     }
 
     @Get()
+    @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserListResponse})
     @ApiOperation({summary: 'List Users'})
