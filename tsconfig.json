@@ -14,10 +14,10 @@
     "skipLibCheck": true,
     "paths": {
       "@toptal/libs-auth": [
-        "libs/auth"
+        "src/libs/auth"
       ],
       "@toptal/libs-db": [
-        "libs/db"
+        "src/libs/db"
       ]
     }
   }

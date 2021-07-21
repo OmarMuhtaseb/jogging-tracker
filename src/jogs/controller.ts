@@ -1,10 +1,10 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AuthenticatedUser, AuthUser, Role, Roles, RolesGuard, UserGuard} from '@toptal/libs-auth';
-import {PaginationQuery} from '../schema';
+import {PaginationQuery} from '../types';
 import {JogListResponse, JogResponse} from './dto';
 import {JogsMapper} from './mapper';
-import {JogRequest} from './request';
+import {JogRequest, PathParams} from './request';
 import {JogsService} from './service';
 
 @ApiBearerAuth()
@@ -29,9 +29,9 @@ export class JogsController {
     @Roles('user', 'admin')
     @ApiResponse({type: JogResponse})
     @ApiOperation({summary: 'Get User'})
-    public async get(@AuthenticatedUser() user: AuthUser, @Param('id') id: string): Promise<JogResponse> {
+    public async get(@AuthenticatedUser() user: AuthUser, @Param() params: PathParams): Promise<JogResponse> {
         const userId = user.role === Role.user ? user.id : '';
-        const jog = await this.service.get(id, userId);
+        const jog = await this.service.get(params.id, userId);
         return {jog: JogsMapper.toJogDto(jog)};
     }
 
@@ -40,8 +40,8 @@ export class JogsController {
     @Roles('user', 'admin')
     @ApiResponse({type: JogResponse})
     @ApiOperation({summary: 'Update Jog'})
-    public async update(@Param('id') id: string, @Body() request: JogRequest): Promise<JogResponse> {
-        const jog = await this.service.update(id, request);
+    public async update(@Param() params: PathParams, @Body() request: JogRequest): Promise<JogResponse> {
+        const jog = await this.service.update(params.id, request);
         return {jog: JogsMapper.toJogDto(jog)};
     }
 
@@ -49,9 +49,9 @@ export class JogsController {
     @Roles('user', 'admin')
     @ApiResponse({type: JogResponse})
     @ApiOperation({summary: 'Delete Jog'})
-    public async delete(@AuthenticatedUser() user: AuthUser, @Param('id') id: string): Promise<JogResponse> {
+    public async delete(@AuthenticatedUser() user: AuthUser, @Param() params: PathParams): Promise<JogResponse> {
         const userId = user.role === Role.user ? user.id : '';
-        const jog = await this.service.delete(id, userId);
+        const jog = await this.service.delete(params.id, userId);
         return {jog: JogsMapper.toJogDto(jog)};
     }
 

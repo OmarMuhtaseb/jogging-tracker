@@ -6,6 +6,8 @@ import Pagination = Repository.Pagination;
 export class Repository<T extends BaseModel> {
     private readonly table: string;
     public readonly model: Model<T>;
+    private static readonly DEFAULT_SKIP = 0;
+    private static readonly DEFAULT_LIMIT = 10;
 
     constructor(tableName: string, private readonly schema: Schema, indexes: {fields: any; options?: any}[] = []) {
         this.table = tableName;
@@ -56,7 +58,7 @@ export class Repository<T extends BaseModel> {
     public async deleteById(id: string): Promise<T> {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const entity = await this.model.findByIdAndDelete(id, {$set: fields});
+        const entity = await this.model.findByIdAndDelete(id);
 
         if (!entity) {
             throw new NotFoundException(`${this.table} with ${id} Not Found`);
@@ -70,8 +72,8 @@ export class Repository<T extends BaseModel> {
             {
                 $facet: {
                     data: [
-                        {$skip: options.skip},
-                        {$limit: options.limit},
+                        {$skip: options.skip || Repository.DEFAULT_SKIP},
+                        {$limit: options.limit || Repository.DEFAULT_LIMIT},
                     ],
                     total: [{$count: 'total'}],
                 },

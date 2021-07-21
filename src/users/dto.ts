@@ -1,4 +1,4 @@
-import {PaginationResponse} from '../schema';
+import {PaginationResponse} from '../types';
 
 export class Dto {
     id: string;

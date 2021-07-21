@@ -1,4 +1,10 @@
+import {IsObjectId} from '@toptal/libs-db';
 import {IsDateString, IsNotEmpty, IsNumber, IsPositive, IsString} from 'class-validator';
+
+export class PathParams {
+    @IsObjectId()
+    id: string;
+}
 
 export class JogRequest {
     @IsString()

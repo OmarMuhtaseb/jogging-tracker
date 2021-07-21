@@ -1,5 +1,5 @@
 import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
-import {PaginationQuery} from '../schema';
+import {PaginationQuery} from '../types';
 import {UsersService} from '../users';
 import {JogsConstants} from './constants';
 import {HelpersService} from './helpers';

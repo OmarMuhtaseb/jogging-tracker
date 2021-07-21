@@ -2,7 +2,7 @@ import {ConflictException, Injectable, UnauthorizedException} from '@nestjs/comm
 import {JwtService} from '@nestjs/jwt';
 import {AuthUser, Role} from '@toptal/libs-auth';
 import {compareSync, hashSync} from 'bcrypt';
-import {PaginationQuery} from '../schema';
+import {PaginationQuery} from '../types';
 import {UsersConstants} from './constants';
 import {UsersRepository} from './repository';
 import {User} from './schema';
@@ -35,9 +35,8 @@ export class UsersService {
         return await this.repository.existsById(id);
     }
 
-    public async update(id: string, data: {name: string, password: string}): Promise<User> {
-        const hashedPassword = UsersService.hashPassword(data.password);
-        return await this.repository.updateById(id, {name: data.name, password: hashedPassword});
+    public async update(id: string, data: {name: string, email: string}): Promise<User> {
+        return await this.repository.updateById(id, {name: data.name, email: data.email});
     }
 
     public async delete(id: string): Promise<User> {
