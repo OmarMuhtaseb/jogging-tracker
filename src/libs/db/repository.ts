@@ -1,4 +1,4 @@
-import {NotFoundException} from '@nestjs/common';
+import {BadRequestException, NotFoundException} from '@nestjs/common';
 import {FilterQuery, Model, model, Schema} from 'mongoose';
 import {BaseModel} from './schema';
 import {Utils} from './utils';
@@ -69,28 +69,30 @@ export class Repository<T extends BaseModel> {
     }
 
     public async list(options: Pagination): Promise<{data: T[], total: number}> {
-        const result = await this.model.aggregate([
-            {
-                $match: Utils.parseFilters(options.filters),
-            },
-            {
-                $facet: {
-                    data: [
-                        {$skip: options.skip || Repository.DEFAULT_SKIP},
-                        {$limit: options.limit || Repository.DEFAULT_LIMIT},
-                    ],
-                    total: [{$count: 'total'}],
+        try {
+            const result = await this.model.aggregate([
+                {
+                    $match: Utils.parseFilters(options.filters),
                 },
-            },
-        ]);
+                {
+                    $facet: {
+                        data: [
+                            {$skip: options.skip || Repository.DEFAULT_SKIP},
+                            {$limit: options.limit || Repository.DEFAULT_LIMIT},
+                        ],
+                        total: [{$count: 'total'}],
+                    },
+                },
+            ]);
+            const {total = 0} = result[0].total[0] || {};
 
-        const {total = 0} = result[0].total[0] || {};
-
-        return {
-            total: total,
-            data: result[0].data,
-        };
-
+            return {
+                total: total,
+                data: result[0].data,
+            };
+        } catch (e) {
+            throw new BadRequestException('Filters cannot be parsed');
+        }
     }
 
     public async existsById(id: string): Promise<boolean> {

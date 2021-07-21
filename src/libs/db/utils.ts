@@ -18,19 +18,19 @@ export class Utils {
         const regex = new RegExp(reg, 'gi');
         return s.replace(regex, matched => {
             const opRegex = new RegExp(`(${Object.keys(comparisonsRep).join('|')})`, 'gi');
-            const opReplaced = matched.replace(opRegex, opMatched => comparisonsRep[opMatched]);
+            const opReplaced = matched.replace(opRegex, opMatched => comparisonsRep[opMatched.toLowerCase()]);
             return `({${opReplaced.substr(1, opReplaced.length - 2)}}})`;
         });
     }
 
     private static parseLogicOps(s: string): string {
         const comparisonsRep = {
-            ' AND ': '&',
-            ' OR ': '|',
+            ' and ': '&',
+            ' or ': '|',
         };
 
-        const regex = new RegExp(Object.keys(comparisonsRep).join('|'), 'g');
-        return s.replace(regex, matched => comparisonsRep[matched]);
+        const regex = new RegExp(Object.keys(comparisonsRep).join('|'), 'gi');
+        return s.replace(regex, matched => comparisonsRep[matched.toLowerCase()]);
     }
 
     private static resolveFilter(terms: any[], stack: string[]): void {
@@ -65,7 +65,7 @@ export class Utils {
                 Utils.resolveFilter(terms, stack);
             } else {
                 let term = '';
-                while (str[i] !== ')') {
+                while (i < str.length && str[i] !== ')') {
                     term += str[i];
                     i++;
                 }
