@@ -21,7 +21,7 @@ export class JogsService {
         }
 
         const weather = await this.helpersService.getWeather(data.location, data.date);
-        return await this.repository.create({...data, weather: weather});
+        return await this.repository.create({...data, weather: weather, date: data.date});
     }
 
     public async get(id: string, userId: string): Promise<Jog> {
@@ -36,7 +36,7 @@ export class JogsService {
 
     public async update(id: string, data: JogRequest): Promise<Jog> {
         const weather = await this.helpersService.getWeather(data.location, data.date);
-        return await this.repository.updateById(id, {...data, weather: weather});
+        return await this.repository.updateById(id, {...data, weather: weather, date: data.date});
     }
 
     public async delete(id: string, userId): Promise<Jog> {

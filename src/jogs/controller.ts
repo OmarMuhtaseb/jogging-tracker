@@ -1,6 +1,7 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AuthenticatedUser, AuthUser, Role, Roles, RolesGuard, UserGuard} from '@toptal/libs-auth';
+import {AppConstants} from '../constants';
 import {PaginationQuery} from '../types';
 import {JogListResponse, JogResponse} from './dto';
 import {JogsMapper} from './mapper';
@@ -61,6 +62,10 @@ export class JogsController {
     @ApiOperation({summary: 'List Jogs'})
     public async list(@Query() query: PaginationQuery): Promise<JogListResponse> {
         const {jogs, total} = await this.service.list(query);
-        return {jogs: JogsMapper.toJogDtos(jogs), total, limit: query.limit, skip: query.skip};
+        return {jogs: JogsMapper.toJogDtos(jogs),
+            total,
+            limit: query.limit || AppConstants.PaginationDefaultLimit,
+            skip: query.skip || 0,
+        };
     }
 }

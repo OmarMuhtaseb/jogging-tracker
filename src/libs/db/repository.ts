@@ -1,6 +1,7 @@
 import {NotFoundException} from '@nestjs/common';
 import {FilterQuery, Model, model, Schema} from 'mongoose';
 import {BaseModel} from './schema';
+import {Utils} from './utils';
 import Pagination = Repository.Pagination;
 
 export class Repository<T extends BaseModel> {
@@ -70,6 +71,9 @@ export class Repository<T extends BaseModel> {
     public async list(options: Pagination): Promise<{data: T[], total: number}> {
         const result = await this.model.aggregate([
             {
+                $match: Utils.parseFilters(options.filters),
+            },
+            {
                 $facet: {
                     data: [
                         {$skip: options.skip || Repository.DEFAULT_SKIP},
@@ -111,5 +115,6 @@ declare namespace Repository {
     export type Pagination = {
         limit?: number;
         skip?: number;
+        filters?: string;
     }
 }

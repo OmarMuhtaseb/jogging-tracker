@@ -1,5 +1,6 @@
 import {IsObjectId} from '@toptal/libs-db';
-import {IsDateString, IsNotEmpty, IsNumber, IsPositive, IsString} from 'class-validator';
+import {IsNotEmpty, IsNumber, IsPositive, IsString, Matches} from 'class-validator';
+import {JogsConstants} from './constants';
 
 export class PathParams {
     @IsObjectId()
@@ -19,9 +20,10 @@ export class JogRequest {
     @IsPositive()
     time: number;
 
-    @IsDateString()
+    @IsString()
     @IsNotEmpty()
-    date: Date;
+    @Matches(JogsConstants.DATE_REGEX, {message: JogsConstants.ExceptionMessages.DATE_REGEX})
+    date: string;
 
     @IsString()
     @IsNotEmpty()

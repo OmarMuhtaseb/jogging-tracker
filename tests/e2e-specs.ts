@@ -14,6 +14,8 @@ describe('UsersController', () => {
     const regularUser: {userId?: string, token?: string, jogId?: string} = {};
     const dbName = 'runner-tracker-testing';
 
+    // TODO: Add test for the report
+
     async function initDB() {
         await mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${
             process.env.DB_PASSWORD}@${process.env.DB_HOST}/${dbName}`, {
@@ -194,7 +196,7 @@ describe('UsersController', () => {
             .auth(regularUser.token, {type: 'bearer'})
             .send({
                 user: regularUser.userId,
-                distance: 20,
+                distance: 21,
                 time: 400,
                 date: '2021-07-20',
                 location: updatedLocation,
@@ -203,6 +205,25 @@ describe('UsersController', () => {
 
         expect(response.body.jog.id).toEqual(regularUser.jogId);
         expect(response.body.jog.location).toEqual(updatedLocation);
+    });
+
+    it(`GET /jogs`, async () => {
+        const response = await request(app.getHttpServer())
+            .get(`/jogs`)
+            .auth(regularUser.token, {type: 'bearer'})
+            .expect(200);
+
+        expect(response.body.jogs.length).toBeGreaterThan(0);
+    });
+
+    it(`GET /jogs with filters`, async () => {
+        const response = await request(app.getHttpServer())
+            .get(`/jogs`)
+            .query({filter: "(date eq '2021-07-20') AND ((distance gt 20) OR (distance lt 10))"})
+            .auth(regularUser.token, {type: 'bearer'})
+            .expect(200);
+
+        expect(response.body.jogs.length).toBeGreaterThan(0);
     });
 
     it(`DELETE /jogs/{id}`, async () => {

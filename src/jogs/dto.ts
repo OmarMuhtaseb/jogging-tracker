@@ -4,11 +4,10 @@ export class JogDto {
     id: string;
     user: string;
     distance: number;
-    date: Date;
+    date: string;
     time: number;
     location: string;
     weather: string;
-    createdAt: Date;
 }
 
 export class JogResponse {

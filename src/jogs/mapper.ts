@@ -11,7 +11,6 @@ export class JogsMapper {
             location: jog.location,
             time: jog.time,
             weather: jog.weather,
-            createdAt: jog.createdAt,
         };
     }
 

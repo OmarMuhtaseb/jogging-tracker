@@ -1,5 +1,5 @@
 import {Transform} from 'class-transformer';
-import {IsInt, IsOptional, Max, Min} from 'class-validator';
+import {IsInt, IsNotEmpty, IsOptional, IsString, Max, Min} from 'class-validator';
 import {AppConstants} from './constants';
 
 export class PaginationResponse {
@@ -21,4 +21,9 @@ export class PaginationQuery {
     @IsInt()
     @Min(0)
     skip?: number;
+
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    filters?: string;
 }

@@ -11,7 +11,7 @@ export class Jog extends BaseModel {
     distance: number;
 
     @Prop({required: true})
-    date: Date;
+    date: string;
 
     @Prop({required: true})
     time: number;
