@@ -3,9 +3,9 @@ import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger
 import {AuthenticatedUser, AuthUser, Role, Roles, RolesGuard, UserGuard} from '@toptal/libs-auth';
 import {AppConstants} from '../constants';
 import {PaginationQuery} from '../types';
-import {JogListResponse, JogResponse} from './dto';
+import {JogListResponse, JogReportResponse, JogResponse} from './dto';
 import {JogsMapper} from './mapper';
-import {JogRequest, PathParams} from './request';
+import {JogRequest, PathParams, ReportQuery} from './request';
 import {JogsService} from './service';
 
 @ApiBearerAuth()
@@ -15,6 +15,17 @@ import {JogsService} from './service';
 export class JogsController {
     constructor(private service: JogsService) {
     }
+
+    @Get('report')
+    @Roles('user', 'admin')
+    @ApiResponse({type: JogReportResponse})
+    @ApiOperation({summary: 'Generate Report'})
+    public async generateReport(@AuthenticatedUser() user: AuthUser, @Query() query: ReportQuery): Promise<JogReportResponse> {
+        const userId = user.role === Role.user ? user.id : '';
+        const report = await this.service.generateReport(query.from, query.to, userId);
+        return {data: report};
+    }
+
 
     @Post()
     @UseGuards(UserGuard)
@@ -29,7 +40,7 @@ export class JogsController {
     @Get(':id')
     @Roles('user', 'admin')
     @ApiResponse({type: JogResponse})
-    @ApiOperation({summary: 'Get User'})
+    @ApiOperation({summary: 'Get Jog'})
     public async get(@AuthenticatedUser() user: AuthUser, @Param() params: PathParams): Promise<JogResponse> {
         const userId = user.role === Role.user ? user.id : '';
         const jog = await this.service.get(params.id, userId);
@@ -62,7 +73,8 @@ export class JogsController {
     @ApiOperation({summary: 'List Jogs'})
     public async list(@Query() query: PaginationQuery): Promise<JogListResponse> {
         const {jogs, total} = await this.service.list(query);
-        return {jogs: JogsMapper.toJogDtos(jogs),
+        return {
+            jogs: JogsMapper.toJogDtos(jogs),
             total,
             limit: query.limit || AppConstants.PaginationDefaultLimit,
             skip: query.skip || 0,

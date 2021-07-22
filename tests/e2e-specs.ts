@@ -226,6 +226,25 @@ describe('UsersController', () => {
         expect(response.body.jogs.length).toBeGreaterThan(0);
     });
 
+    it(`GET /jogs/report`, async () => {
+        await request(app.getHttpServer())
+            .put(`/jogs/${regularUser.jogId}`)
+            .auth(regularUser.token, {type: 'bearer'})
+            .send({
+                user: regularUser.userId,
+                distance: 21,
+                time: 400,
+                date: '2021-07-12',
+                location: 'paris',
+            })
+        const response = await request(app.getHttpServer())
+            .get(`/jogs/report`)
+            .auth(adminToken, {type: 'bearer'})
+            .expect(200);
+
+        expect(response.body.data.length).toEqual(2);
+    });
+
     it(`DELETE /jogs/{id}`, async () => {
         const response = await request(app.getHttpServer())
             .delete(`/jogs/${regularUser.jogId}`)

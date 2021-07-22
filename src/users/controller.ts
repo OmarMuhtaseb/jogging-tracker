@@ -15,14 +15,12 @@ export class UsersController {
     constructor(private service: UsersService) {
     }
 
-    // TODO: Add role update API
     @Post()
     @UseGuards(RolesGuard)
     @Roles('manager', 'admin')
     @ApiResponse({type: UserResponse})
     @ApiOperation({summary: 'Create User'})
     public async create(@Body() request: UserCreateRequest): Promise<UserResponse> {
-        // TODO: manager cannot create admin role
         const user = await this.service.create(request);
         return {user: UsersMapper.toUserDto(user)};
     }

@@ -5,7 +5,7 @@ import {JogsConstants} from './constants';
 import {HelpersService} from './helpers';
 import {JogsRepository} from './repository';
 import {JogRequest} from './request';
-import {Jog} from './schema';
+import {Jog, WeeklyReport} from './schema';
 
 @Injectable()
 export class JogsService {
@@ -55,5 +55,9 @@ export class JogsService {
             jogs: data,
             total,
         };
+    }
+
+    public async generateReport(from: string, to: string, userId?: string): Promise<WeeklyReport[]> {
+        return await this.repository.generateReport(from, to, userId);
     }
 }

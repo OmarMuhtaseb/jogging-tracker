@@ -1,5 +1,7 @@
 import {IsObjectId} from '@toptal/libs-db';
-import {IsNotEmpty, IsNumber, IsPositive, IsString, Matches} from 'class-validator';
+import {Transform} from 'class-transformer';
+import {IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Matches, Max, Min} from 'class-validator';
+import {AppConstants} from '../constants';
 import {JogsConstants} from './constants';
 
 export class PathParams {
@@ -28,4 +30,18 @@ export class JogRequest {
     @IsString()
     @IsNotEmpty()
     location: string;
+}
+
+export class ReportQuery {
+    @IsString()
+    @IsOptional()
+    @IsNotEmpty()
+    @Matches(JogsConstants.DATE_REGEX, {message: JogsConstants.ExceptionMessages.DATE_REGEX})
+    from?: string;
+
+    @IsString()
+    @IsOptional()
+    @IsNotEmpty()
+    @Matches(JogsConstants.DATE_REGEX, {message: JogsConstants.ExceptionMessages.DATE_REGEX})
+    to?: string;
 }

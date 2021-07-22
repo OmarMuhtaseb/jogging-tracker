@@ -24,3 +24,10 @@ export class Jog extends BaseModel {
 }
 
 export const JogSchema = SchemaFactory.createForClass(Jog);
+
+export type WeeklyReport = {
+    year: number,
+    week: number,
+    avgDistance: number,
+    avgTime: number,
+}

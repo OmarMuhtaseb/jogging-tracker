@@ -1,4 +1,5 @@
 import {PaginationResponse} from '../types';
+import {WeeklyReport} from './schema';
 
 export class JogDto {
     id: string;
@@ -16,4 +17,8 @@ export class JogResponse {
 
 export class JogListResponse extends PaginationResponse {
     jogs: JogDto[];
+}
+
+export class JogReportResponse {
+    data: WeeklyReport[];
 }
