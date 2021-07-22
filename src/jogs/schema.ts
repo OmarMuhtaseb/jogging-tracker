@@ -30,4 +30,7 @@ export type WeeklyReport = {
     week: number,
     avgDistance: number,
     avgTime: number,
+    avgSpeed: number,
+    totalTime: number,
+    totalDistance: number,
 }

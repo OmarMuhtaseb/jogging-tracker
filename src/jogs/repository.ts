@@ -42,16 +42,24 @@ export class JogsRepository extends Repository<Jog> {
                         week: '$week',
                     },
                     avgDistance: {$avg: '$distance'},
-                    avgTime: {$avg: '$time'}
-                }
-            }
+                    avgTime: {$avg: '$time'},
+                    totalDistance: {$sum: '$distance'},
+                    totalTime: {$sum: '$time'},
+                },
+            },
         ]);
 
-        return result.map((record: {_id: {year: number, week: number}, avgDistance: number, avgTime: number}) => ({
+        return result.map((record: {
+            _id: {year: number, week: number},
+            avgDistance: number, avgTime: number, totalDistance: number, totalTime: number
+        }) => ({
             year: record._id.year,
             week: record._id.week,
             avgDistance: record.avgDistance,
             avgTime: record.avgTime,
-        }))
+            avgSpeed: record.totalTime > 0 ? Math.round(record.totalDistance / record.totalTime) : 0,
+            totalTime: record.totalTime,
+            totalDistance: record.totalDistance,
+        }));
     }
 }
