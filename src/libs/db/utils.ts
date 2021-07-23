@@ -70,6 +70,7 @@ export class Utils {
                     i++;
                 }
                 i--;
+
                 terms.push(eval(`(${term})`));
             }
         }

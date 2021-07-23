@@ -52,8 +52,9 @@ export class JogsController {
     @Roles('user', 'admin')
     @ApiResponse({type: JogResponse})
     @ApiOperation({summary: 'Update Jog'})
-    public async update(@Param() params: PathParams, @Body() request: JogRequest): Promise<JogResponse> {
-        const jog = await this.service.update(params.id, request);
+    public async update(@AuthenticatedUser() user: AuthUser, @Param() params: PathParams, @Body() request: JogRequest): Promise<JogResponse> {
+        const userId = user.role === Role.user ? user.id : '';
+        const jog = await this.service.update(params.id, request, userId);
         return {jog: JogsMapper.toJogDto(jog)};
     }
 
@@ -71,8 +72,9 @@ export class JogsController {
     @Roles('user', 'admin')
     @ApiResponse({type: JogListResponse})
     @ApiOperation({summary: 'List Jogs'})
-    public async list(@Query() query: PaginationQuery): Promise<JogListResponse> {
-        const {jogs, total} = await this.service.list(query);
+    public async list(@AuthenticatedUser() user: AuthUser, @Query() query: PaginationQuery): Promise<JogListResponse> {
+        const userId = user.role === Role.user ? user.id : undefined;
+        const {jogs, total} = await this.service.list(query, userId);
         return {
             jogs: JogsMapper.toJogDtos(jogs),
             total,

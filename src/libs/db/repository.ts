@@ -68,11 +68,14 @@ export class Repository<T extends BaseModel> {
         return entity;
     }
 
-    public async list(options: Pagination): Promise<{data: T[], total: number}> {
+    public async list(options: Pagination, userId?: string): Promise<{data: T[], total: number}> {
         try {
             const result = await this.model.aggregate([
                 {
-                    $match: Utils.parseFilters(options.filters),
+                    $match: {
+                        ...Utils.parseFilters(options.filters),
+                        ...(userId && {user: userId}),
+                    },
                 },
                 {
                     $facet: {

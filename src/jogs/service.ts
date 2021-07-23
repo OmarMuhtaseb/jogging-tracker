@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {PaginationQuery} from '../types';
 import {UsersService} from '../users';
 import {JogsConstants} from './constants';
@@ -34,7 +34,13 @@ export class JogsService {
         return jog;
     }
 
-    public async update(id: string, data: JogRequest): Promise<Jog> {
+    public async update(id: string, data: JogRequest, userId: string): Promise<Jog> {
+        const jog = await this.repository.findById(id);
+
+        if (!!userId && jog.user !== userId && data.user !== userId) {
+            throw new ForbiddenException(JogsConstants.ExceptionMessages.FORBIDDEN_RESOURCE);
+        }
+
         const weather = await this.helpersService.getWeather(data.location, data.date);
         return await this.repository.updateById(id, {...data, weather: weather, date: data.date});
     }
@@ -49,8 +55,8 @@ export class JogsService {
         return jog;
     }
 
-    public async list(query: PaginationQuery): Promise<{jogs: Jog[], total: number}> {
-        const {data, total} = await this.repository.list(query);
+    public async list(query: PaginationQuery, userId?: string): Promise<{jogs: Jog[], total: number}> {
+        const {data, total} = await this.repository.list(query, userId);
         return {
             jogs: data,
             total,

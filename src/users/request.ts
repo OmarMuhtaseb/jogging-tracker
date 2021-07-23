@@ -44,4 +44,7 @@ export class UserUpdateRequest {
     @IsString()
     @IsNotEmpty()
     email: string;
+
+    @IsEnum(Role)
+    role: Role;
 }
